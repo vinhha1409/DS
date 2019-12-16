@@ -4,8 +4,8 @@ import ContentItem from './content-item';
 
 class Content extends Component {
     render() {
-        var { movies } = this.props;    
-        var content = undefined;
+        const { movies } = this.props;
+        let content = undefined;
         if(movies){
             content = movies.map((movie, index) => {
                 return <ContentItem
@@ -18,7 +18,7 @@ class Content extends Component {
         }else{
             content = "Nothing yet";
         }
-            
+
         return (
             <div className="content">
                 <Row>

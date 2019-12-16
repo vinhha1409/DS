@@ -10,9 +10,9 @@ class ContentItem extends Component {
         return (
             <Col lg={3}>
                 <Card className="movie-card" >
-                    <Card.Img style={{objectFit: 'scale-down'}} variant="top" className="item-img" src={"https://image.tmdb.org/t/p/w600_and_h900_bestv2/" + movie._source.poster_path} />
+                    <Card.Img style={{objectFit: 'scale-down'}} variant="top" className="item-img" src={"https://image.tmdb.org/t/p/w600_and_h900_bestv2/" + movie.poster_path} />
                     <Card.Body>
-                        <Card.Title style={{whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>{movie._source.original_title}</Card.Title>
+                        <Card.Title style={{whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>{movie.original_title}</Card.Title>
                         <Button onClick={this.onAddHis}>Watch</Button>
                     </Card.Body>
                 </Card>

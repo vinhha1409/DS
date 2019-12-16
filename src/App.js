@@ -5,55 +5,71 @@ import SearchBar from './components/search-bar';
 import Content from './components/content';
 import axios from "axios";
 
+
+const BASE_URL = 'http://localhost:5000'
+
+
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      history:[],
-      movies: [
-        
-      ]
+      logs: [],
+      movies: []
     }
   }
+
   componentDidMount(){
+    this.defaultRecommend()
+  }
+
+  defaultRecommend() {
     axios({
       method: "get",
-      url: `http://192.168.1.178:1998/default-recommendation`
+      url: `${BASE_URL}/default-recommendation`
     })
-      .then(respone => {
+      .then(response => {
         this.setState({
-          movies: respone.data.hits.hits,
+          movies: response.data.data,
         });
       })
       .catch(error => {
         console.log(error);
       });
-      this.setState({
-        history: JSON.parse(localStorage.getItem('movies'))
-      })
-  }
-  onAddHis = (movie) =>{
-    let historY = this.state.history;
-    historY.push(movie);
     this.setState({
-      history: historY
+      logs: JSON.parse(localStorage.getItem('movies')) || []
     })
-    localStorage.setItem('movies', JSON.stringify(historY));
   }
+
+  onAddHis = (movie) =>{
+    let logs = this.state.logs;
+    if (!logs.find(item => item.id === movie.id)) {
+      logs.push(movie);
+    }
+    this.setState({
+      logs: logs
+    })
+    localStorage.setItem('movies', JSON.stringify(logs));
+  }
+
   onSearch = (keyword) => {
-    axios({
-      method: "get",
-      url: `http://192.168.1.178:1998/auto/${keyword}`
-    })
-      .then(respone => {
-        this.setState({
-          movies: respone.data.data
-        });
+    if (keyword.trim()) {
+      axios({
+        method: "get",
+        url: `${BASE_URL}/auto/${keyword.trim()}`
       })
-      .catch(error => {
-        console.log(error);
-      });
+        .then(response => {
+          this.setState({
+            movies: response.data.data
+          });
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    } else {
+      this.defaultRecommend()
+    }
   }
+
   onRecommend = () => {
     const films = JSON.parse(localStorage.getItem('movies'))
     const payload = {}
@@ -61,36 +77,41 @@ class App extends Component {
       return;
     }
     films.forEach(film => {
-      payload[film._source.id] = 4
+      if (film && film.id) {
+        payload[film.id] = 4
+      }
     })
     axios({
       method: "post",
-      url: `http://192.168.1.178:1998/logs/`,
+      url: `${BASE_URL}/logs/`,
       data: payload
     })
       .then(response => {
         console.log(response)
         this.setState({
-          movies: response.data
+          movies: response.data.data
         });
       })
       .catch(error => {
         console.log(error);
       });
   }
+
   onShowHis = () => {
     let movies = JSON.parse(localStorage.getItem("movies"));
+    console.log(movies)
     this.setState({
       movies: movies
     })
   }
+
   onClearHis = () => {
-    localStorage.clear("movies");
-    let movies = JSON.parse(localStorage.getItem("movies"));
+    localStorage.removeItem("movies");
     this.setState({
-      movies: movies
+      movies: []
     })
   }
+
   render() {
 
     return (
