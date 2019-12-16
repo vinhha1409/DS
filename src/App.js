@@ -87,7 +87,6 @@ class App extends Component {
       data: payload
     })
       .then(response => {
-        console.log(response)
         this.setState({
           movies: response.data.data
         });
@@ -99,7 +98,6 @@ class App extends Component {
 
   onShowHis = () => {
     let movies = JSON.parse(localStorage.getItem("movies"));
-    console.log(movies)
     this.setState({
       movies: movies
     })
@@ -108,7 +106,8 @@ class App extends Component {
   onClearHis = () => {
     localStorage.removeItem("movies");
     this.setState({
-      movies: []
+      movies: [],
+      logs: []
     })
   }
 
